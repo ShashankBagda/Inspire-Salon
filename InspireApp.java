@@ -387,7 +387,7 @@ public class InspireApp extends JFrame implements ActionListener
         developer.setBounds(1265, 980, 350, 50); // Adjust size and position as needed
         developer.setFont(new Font("Arial", Font.BOLD, 20)); // Set font with size 40
         developer.setBackground(Color.green); // Set background color to blue
-        developer.setForeground(Color.WHITE); // Set foreground (text) color to white
+        developer.setForeground(Color.blue); // Set foreground (text) color to white
         developer.setHorizontalAlignment(SwingConstants.CENTER);
         developer.setOpaque(true); // Set opaque to true to make background visible
         add(developer);
