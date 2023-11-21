@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class InspireApp extends JFrame implements ActionListener 
 {
     
-    JLabel l1, l2, l3, order, cart, details, name, phone, email, history, line1, line2;
+    JLabel l1, l2, l3, order, cart, details, name, phone, email, history, line1, line2, developer;
     JButton myButton1, clear, proceed, signalButton, haircutButton, beardButton, hairspaButton, dandruffButton, matrixButton, majirelButton, inoaButton, cleanupButton, facialButton, whiteningButton, keratinButton, botoxButton, smootheningButton, rebondingButton, straighteningButton, silverButton, goldButton, platinumButton, specialButton;
     JTextField phoneNumberField;
     JTextArea nameTextArea, phoneTextArea, mailTextArea, historyTextArea, cartArea, totalArea;
@@ -380,8 +380,17 @@ public class InspireApp extends JFrame implements ActionListener
         historyTextArea.setEditable(false);
         historyTextArea.setFont(new Font("Arial", Font.PLAIN, 30));
         JScrollPane scrollPane = new JScrollPane(historyTextArea);
-        scrollPane.setBounds(980, 540, 920, 500);
+        scrollPane.setBounds(980, 540, 920, 400);
         add(scrollPane);
+
+        developer = new JLabel("App Developer : Shashank Bagda");
+        developer.setBounds(1265, 980, 350, 50); // Adjust size and position as needed
+        developer.setFont(new Font("Arial", Font.BOLD, 20)); // Set font with size 40
+        developer.setBackground(Color.green); // Set background color to blue
+        developer.setForeground(Color.WHITE); // Set foreground (text) color to white
+        developer.setHorizontalAlignment(SwingConstants.CENTER);
+        developer.setOpaque(true); // Set opaque to true to make background visible
+        add(developer);
 
     }
 
