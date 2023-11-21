@@ -2,8 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class InspireApp extends JFrame implements ActionListener 
@@ -16,6 +19,7 @@ public class InspireApp extends JFrame implements ActionListener
     JRadioButton cashRadio, onlineRadio;
     ButtonGroup paymentGroup;
     int serial = 1, total;
+    private static final String LICENSE_FILE_PATH = "license.txt";
 
     ImageIcon haircutIcon = new ImageIcon("Images/haircut.png");
     ImageIcon beardIcon = new ImageIcon("Images/beard.png");
@@ -43,7 +47,8 @@ public class InspireApp extends JFrame implements ActionListener
     {
         setTitle("Inspire Men's Salon");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1920, 1040);
+        pack();
+        //setSize(1920, 1040);
         setLocationRelativeTo(null); // Center the window
         setLayout(null); // Use null layout for manual positioning
         setVisible(true);
@@ -67,7 +72,7 @@ public class InspireApp extends JFrame implements ActionListener
         l2.setBounds(1710, 10, 200, 200); // Adjust size and position as needed
         add(l2);
 
-        l3 = new JLabel("Rakesh Parmar - 9999988888             Tushar Parmar - 1111122222");
+        l3 = new JLabel("Rakesh Parmar - 6355809023             Tushar Parmar - 9328685986");
         l3.setBounds(10, 115, 1690, 95); // Adjust size and position as needed
         l3.setFont(new Font("Arial", Font.BOLD, 40)); // Set font with size 40
         l3.setBackground(Color.green); // Set background color to blue
@@ -385,6 +390,10 @@ public class InspireApp extends JFrame implements ActionListener
         if (e.getActionCommand().equals("Search"))
         {
             String phoneNumber = phoneNumberField.getText();
+            String phonePattern = "\\d{10}";
+
+            if(!phoneNumber.equals("Enter Phone No") && phoneNumber.matches(phonePattern))
+            {
                 nameTextArea.setText("");
                 phoneTextArea.setText("");
                 mailTextArea.setText("");
@@ -450,6 +459,11 @@ public class InspireApp extends JFrame implements ActionListener
                         ex.printStackTrace();
                     }
                 }
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Enter Phone Number to proceed");
+            }   
         }
 
         if (e.getSource() == haircutButton) {
@@ -643,12 +657,93 @@ public class InspireApp extends JFrame implements ActionListener
         currentTotal += price;
         totalArea.setText(String.valueOf(currentTotal));
     }
+
+    private static boolean validateLicense() {
+        File licenseFile = new File(LICENSE_FILE_PATH);
+        if (!licenseFile.exists()) {
+            System.out.println("License file not found.");
+            return false;
+        }
     
+        String extractedNumbersAndSymbol = null; // Declare outside the try block
+    
+        try (BufferedReader br = new BufferedReader(new FileReader(LICENSE_FILE_PATH))) {
+            String line;
+            StringBuilder key = new StringBuilder();
+    
+            while ((line = br.readLine()) != null) {
+                key.append(line).append("\n");
+                //System.out.println(line); // Printing the line, you can perform operations here
+            }
+            //System.out.println(key);
+    
+            // Regular expression to match numbers and the '-' symbol
+            Pattern pattern = Pattern.compile("[0-9-]+");
+            Matcher matcher = pattern.matcher(key);
+    
+            StringBuilder result = new StringBuilder();
+    
+            // Extracting numbers and '-' symbol and storing in a string
+            while (matcher.find()) {
+                result.append(matcher.group());
+            }
+    
+            extractedNumbersAndSymbol = result.toString();
+            System.out.println("License Expiration: " + extractedNumbersAndSymbol);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+        if (extractedNumbersAndSymbol != null) {
+            // Assuming extractedNumbersAndSymbol is the expiration date in ISO_DATE format
+            LocalDate expirationDate = LocalDate.parse(extractedNumbersAndSymbol, DateTimeFormatter.ISO_DATE);
+            LocalDate currentDate = LocalDate.now();
+    
+            return !currentDate.isAfter(expirationDate); // Check if the current date is before or equal to the expiration date
+        } else {
+            return false; // Or handle this case based on your logic
+        }
+    }
+    
+
+    private static void showExpiredMembershipMessage() {
+        JOptionPane.showMessageDialog(
+                null,
+                "Your membership has expired. Please renew or purchase a new membership.",
+                "Membership Expired",
+                JOptionPane.WARNING_MESSAGE
+        );
+    }
+
     public static void main(String[] args) 
     {
-        SwingUtilities.invokeLater(() -> 
+        try 
         {
-            new InspireApp();
-        });
+            ProcessBuilder pb = new ProcessBuilder("python", "bootup.py");
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line3;
+            while ((line3 = in.readLine()) != null) {
+                System.out.println(line3);
+            }
+            in.close();
+        } 
+        catch (IOException e4) 
+        {
+            e4.printStackTrace();
+        }
+        boolean isValid = validateLicense();
+        if (isValid) {
+            System.out.println("License is valid. Access granted.");
+            SwingUtilities.invokeLater(() -> 
+            {
+                new InspireApp();
+            });
+        } else {
+            System.out.println("License is invalid or expired. Please renew or purchase a new license.");
+            showExpiredMembershipMessage();
+            // Prompt the user to renew/purchase a license or restrict access
+        }
     }
 }
