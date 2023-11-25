@@ -1,2 +1,1 @@
-javac *.java
 java InspireApp
