@@ -7,7 +7,7 @@ def play_video():
     cap = cv2.VideoCapture(video_path)
 
     window = tk.Tk()
-    window.title("Video Player")
+    window.title("Inspire Salon - Application Booting Up")
     # Get the screen width and height
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
